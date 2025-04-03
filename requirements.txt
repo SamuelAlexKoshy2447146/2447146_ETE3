@@ -4,5 +4,4 @@ pillow
 streamlit
 pandas
 numpy
-random
 # matplotlib.pyplot
