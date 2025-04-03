@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
+from PIL import Image, ImageEnhance
 
 
 # Generate dataset with 10 relevant columns of 300 participants over 5 days, covering 10 sports events and feedback text from each particiant
@@ -89,13 +90,19 @@ def generate_sports_data(
         "Satisfaction_Rating",
         "Feedback",
     ]
-    return pd.DataFrame(data, columns=columns)
-    # data.to_csv(output_file, index=False)
-    # print(f"Dataset saved to {output_file}")
+    data = pd.DataFrame(data, columns=columns)
+    data.to_csv(output_file, index=False)
+    print(f"Dataset saved to {output_file}")
+    return data
 
 
 # Run the function
-data = generate_sports_data()
+# if data is None:
+# data = generate_sports_data()
+try:
+    data = pd.read_csv("sports_event_feedback.csv")
+except FileNotFoundError:
+    data = generate_sports_data()
 
 st.header("CHRISPO Event Feedback Analysis")
 st.write(
@@ -132,11 +139,9 @@ chart_type = st.radio(
 if category_type == "Age Analysis":
     aggregated_data = data["Age"].value_counts()
     label = "Age"
-    print(aggregated_data)
 elif category_type == "College Analysis":
     aggregated_data = data["College"].value_counts()
     label = "College"
-    print(aggregated_data)
 elif category_type == "State Analysis":
     aggregated_data = data["State"].value_counts()
     label = "State"
@@ -200,3 +205,50 @@ if sport_feedback.strip():  # Check if there's feedback available
     st.pyplot(fig)
 else:
     st.write("No feedback available for this sport.")
+
+st.write("### Compare Satisfaction Across Sports")
+
+# Multi-select sports for comparison
+selected_sports = st.multiselect(
+    "Select sports to compare satisfaction scores:",
+    data["Sport Event"].unique(),
+    default=data["Sport Event"].unique()[:3],
+)
+
+if selected_sports:
+    # Filter data for selected sports
+    filtered_data = data[data["Sport Event"].isin(selected_sports)]
+
+    # Compute mean satisfaction rating per sport
+    mean_satisfaction = (
+        filtered_data.groupby("Sport Event")["Satisfaction_Rating"].mean().reset_index()
+    )
+
+    # Display bar chart
+    st.bar_chart(
+        data=mean_satisfaction,
+        x="Sport Event",
+        y="Satisfaction_Rating",
+        use_container_width=True,
+    )
+else:
+    st.write("Select at least one sport to display the comparison.")
+
+st.write("### Upload an Image and Apply Sharpening")
+
+# Upload image
+uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+
+if uploaded_file is not None:
+    # Open image using PIL
+    image = Image.open(uploaded_file)
+
+    # Display the original image
+    st.image(image, caption="Original Image", use_column_width=True)
+
+    # Apply sharpening
+    enhancer = ImageEnhance.Sharpness(image)
+    sharpened_image = enhancer.enhance(2.0)  # Increase sharpness (adjust as needed)
+
+    # Display the sharpened image
+    st.image(sharpened_image, caption="Sharpened Image", use_column_width=True)
