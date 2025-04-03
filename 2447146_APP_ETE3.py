@@ -8,10 +8,10 @@ import subprocess
 import sys
 
 # Ensure matplotlib is installed
-try:
-    import matplotlib
-except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "matplotlib"])
+# try:
+#     import matplotlib
+# except ImportError:
+#     subprocess.check_call([sys.executable, "-m", "pip", "install", "matplotlib"])
 
 
 # Generate dataset with 10 relevant columns of 300 participants over 5 days, covering 10 sports events and feedback text from each particiant
@@ -166,24 +166,25 @@ if chart_type == "Bar Chart":
         x=label,
     )
 elif chart_type == "Pie Chart":
-    fig, ax = plt.subplots()
-    wedges, texts, autotexts = ax.pie(
-        aggregated_data.values,
-        labels=aggregated_data.index,
-        autopct="%1.1f%%",
-        startangle=90,
-        colors=plt.cm.Paired.colors,
-    )
-    ax.legend(
-        wedges,
-        aggregated_data.index,
-        title=label,
-        loc="best",
-        bbox_to_anchor=(1, 0.5),
-    )
-    ax.axis("equal")  # Equal aspect ratio ensures that pie is drawn as a circle.
+    st.write("Does not work in deployment")
+    # fig, ax = plt.subplots()
+    # wedges, texts, autotexts = ax.pie(
+    #     aggregated_data.values,
+    #     labels=aggregated_data.index,
+    #     autopct="%1.1f%%",
+    #     startangle=90,
+    #     colors=plt.cm.Paired.colors,
+    # )
+    # ax.legend(
+    #     wedges,
+    #     aggregated_data.index,
+    #     title=label,
+    #     loc="best",
+    #     bbox_to_anchor=(1, 0.5),
+    # )
+    # ax.axis("equal")  # Equal aspect ratio ensures that pie is drawn as a circle.
 
-    st.pyplot(fig)
+    # st.pyplot(fig)
 elif chart_type == "Line Chart":
     st.line_chart(
         pd.DataFrame({label: aggregated_data.index, "Count": aggregated_data.values}),
@@ -206,10 +207,10 @@ if sport_feedback.strip():  # Check if there's feedback available
     )
 
     # Display the word cloud
-    fig, ax = plt.subplots()
-    ax.imshow(wordcloud, interpolation="bilinear")
-    ax.axis("off")  # Hide axes
-    st.pyplot(fig)
+    # fig, ax = plt.subplots()
+    # ax.imshow(wordcloud, interpolation="bilinear")
+    # ax.axis("off")  # Hide axes
+    # st.pyplot(fig)
 else:
     st.write("No feedback available for this sport.")
 
