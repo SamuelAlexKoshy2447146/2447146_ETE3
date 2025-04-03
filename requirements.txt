@@ -1,8 +1,8 @@
-matplotlib
+# matplotlib
 wordcloud
 pillow
 streamlit
 pandas
 numpy
 random
-matplotlib.pyplot
+# matplotlib.pyplot
