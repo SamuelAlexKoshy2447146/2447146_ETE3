@@ -2,9 +2,16 @@ import streamlit as st
 from random import randint, choice
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 from PIL import Image, ImageEnhance
+import subprocess
+import sys
+
+# Ensure matplotlib is installed
+try:
+    import matplotlib
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "matplotlib"])
 
 
 # Generate dataset with 10 relevant columns of 300 participants over 5 days, covering 10 sports events and feedback text from each particiant
